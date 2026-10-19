@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SIGEBI</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="encabezado">
+        <span class="marca">SIGEBI</span>
+        <span class="subtitulo">Sistema de Gestión de Bibliotecas</span>
+    </header>
+
+    <main class="contenido">
+        @RenderBody()
+    </main>
+
+    <footer class="pie">SIGEBI · Programación II · ITLA</footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
