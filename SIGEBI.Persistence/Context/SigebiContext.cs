@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SIGEBI.DAL.Models;
 using SIGEBI.DAL.Models.Auditoria;
 using SIGEBI.DAL.Models.Catalogo;
@@ -7,11 +7,11 @@ using SIGEBI.DAL.Models.Notificaciones;
 using SIGEBI.DAL.Models.Prestamos;
 using SIGEBI.DAL.Models.Seguridad;
 
-namespace SIGEBI.DAL.Data;
+namespace SIGEBI.Persistence.Context;
 
-public class SigebiDbContext : DbContext
+public class SigebiContext : DbContext
 {
-    public SigebiDbContext(DbContextOptions<SigebiDbContext> options) : base(options)
+    public SigebiContext(DbContextOptions<SigebiContext> options) : base(options)
     {
     }
 
@@ -40,7 +40,7 @@ public class SigebiDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Toma todas las clases de la carpeta Data/Configurations
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(SigebiDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(SigebiContext).Assembly);
     }
 
     // Las fechas de creación y modificación se llenan aquí, en un solo lugar.
