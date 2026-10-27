@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SIGEBI.DAL.Models.Catalogo;
 
-namespace SIGEBI.DAL.Data.Configurations;
+namespace SIGEBI.Persistence.Context.Configurations;
 
 public class HistorialEstadoEjemplarConfiguration : IEntityTypeConfiguration<HistorialEstadoEjemplar>
 {

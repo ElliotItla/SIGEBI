@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SIGEBI.DAL.Models.Prestamos;
 
-namespace SIGEBI.DAL.Data.Configurations;
+namespace SIGEBI.Persistence.Context.Configurations;
 
 public class PrestamoConfiguration : IEntityTypeConfiguration<Prestamo>
 {
