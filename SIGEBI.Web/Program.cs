@@ -1,14 +1,12 @@
-﻿using SIGEBI.BL;
-using SIGEBI.Persistence;
+﻿using SIGEBI.IOC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var cadenaConexion = builder.Configuration.GetConnectionString("Sigebi")
     ?? throw new InvalidOperationException("Falta la cadena de conexión 'Sigebi' en appsettings.json.");
 
-// Capas: datos, negocio y presentación
-builder.Services.AddPersistence(cadenaConexion);
-builder.Services.AddBL();
+// Capas: datos, negocio y presentación (todo se registra en la capa IOC)
+builder.Services.AddSigebi(cadenaConexion);
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
