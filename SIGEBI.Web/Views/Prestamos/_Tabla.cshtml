@@ -1,0 +1,64 @@
+﻿@model SIGEBI.Web.Models.Prestamos.PrestamosListaViewModel
+
+<div class="tabla-contenedor">
+    <table class="tabla">
+        <thead>
+            <tr>
+                @if (Model.MostrarRecurso)
+                {
+                    <th>Recurso</th>
+                }
+                @if (Model.MostrarUsuario)
+                {
+                    <th>Usuario</th>
+                }
+                <th>Ejemplar</th>
+                <th>Estado</th>
+                <th>Solicitud</th>
+                <th>Fecha límite</th>
+                <th>Situación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prestamo in Model.Prestamos)
+            {
+                // Días de calendario entre hoy y la fecha límite (la entrega vence al final de ese día)
+                var dias = prestamo.FechaLimite == null ? 0 : (prestamo.FechaLimite.Value.Date - DateTime.Today).Days;
+                <tr>
+                    @if (Model.MostrarRecurso)
+                    {
+                        <td><a asp-controller="Catalogo" asp-action="Detalle" asp-route-id="@prestamo.RecursoId">@prestamo.TituloRecurso</a></td>
+                    }
+                    @if (Model.MostrarUsuario)
+                    {
+                        <td><a asp-action="PorUsuario" asp-route-id="@prestamo.UsuarioId">@prestamo.NombreUsuario</a></td>
+                    }
+                    <td>@prestamo.CodigoEjemplar</td>
+                    <td><span class="@Etiquetas.Clase(prestamo.Estado)">@Etiquetas.Texto(prestamo.Estado)</span></td>
+                    <td>@prestamo.FechaSolicitud.ToString("dd/MM/yyyy")</td>
+                    <td>@(prestamo.FechaLimite?.ToString("dd/MM/yyyy") ?? "—")</td>
+                    <td>
+                        @switch (prestamo.Estado)
+                        {
+                            case "Pendiente":
+                                <span>En espera de aprobación</span>
+                                break;
+                            case "Activo" when prestamo.Vencido:
+                                <span class="etiqueta etiqueta-roja">Vencido hace @Math.Max(1, -dias) día(s)</span>
+                                break;
+                            case "Activo":
+                                <span>@(dias == 0 ? "Vence hoy" : $"Vence en {dias} día(s)")</span>
+                                break;
+                            case "Devuelto":
+                                <span>Devuelto el @prestamo.FechaDevolucion?.ToString("dd/MM/yyyy")</span>
+                                break;
+                            case "Rechazado":
+                                <span>Motivo: @prestamo.MotivoRechazo</span>
+                                break;
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

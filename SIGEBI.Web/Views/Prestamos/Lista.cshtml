@@ -1,0 +1,35 @@
+﻿@model SIGEBI.Web.Models.Prestamos.PrestamosListaViewModel
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<h1>@Model.Titulo</h1>
+<p class="ayuda">@Model.Ayuda</p>
+
+@if (Model.MostrarFiltroEstado)
+{
+    <form method="get" class="filtros">
+        <div class="campo">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado">
+                <option value="">Todos</option>
+                @foreach (var estado in new[] { "Pendiente", "Activo", "Devuelto", "Rechazado" })
+                {
+                    <option value="@estado" selected="@(estado == Model.Estado)">@Etiquetas.Texto(estado)</option>
+                }
+            </select>
+        </div>
+        <div class="acciones">
+            <button type="submit" class="boton">Filtrar</button>
+        </div>
+    </form>
+}
+
+@if (Model.Prestamos.Count == 0)
+{
+    <div class="vacio">No hay préstamos para mostrar.</div>
+}
+else
+{
+    <partial name="_Tabla" model="Model" />
+}

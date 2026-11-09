@@ -1,0 +1,52 @@
+﻿@model List<SIGEBI.BL.Dtos.Prestamo.PrestamoDto>
+@{
+    ViewData["Title"] = "Solicitudes pendientes";
+}
+
+<h1>Solicitudes pendientes</h1>
+<p class="ayuda">Aprueba o rechaza las solicitudes de préstamo. Al aprobar, el sistema vuelve a comprobar las condiciones del usuario.</p>
+
+@if (Model.Count == 0)
+{
+    <div class="vacio">No hay solicitudes pendientes.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Solicitante</th>
+                    <th>Recurso</th>
+                    <th>Ejemplar</th>
+                    <th>Solicitud</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prestamo in Model)
+                {
+                    <tr>
+                        <td><a asp-action="PorUsuario" asp-route-id="@prestamo.UsuarioId">@prestamo.NombreUsuario</a></td>
+                        <td><a asp-action="PorRecurso" asp-route-id="@prestamo.RecursoId">@prestamo.TituloRecurso</a></td>
+                        <td>@prestamo.CodigoEjemplar</td>
+                        <td>@prestamo.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <div class="acciones">
+                                <form asp-action="Aprobar" method="post">
+                                    <input type="hidden" name="prestamoId" value="@prestamo.Id" />
+                                    <button type="submit" class="boton boton-chico">Aprobar</button>
+                                </form>
+                                <form asp-action="Rechazar" method="post" class="acciones">
+                                    <input type="hidden" name="prestamoId" value="@prestamo.Id" />
+                                    <input name="motivo" placeholder="Motivo del rechazo" aria-label="Motivo del rechazo" maxlength="200" required style="padding: 4px 8px;" />
+                                    <button type="submit" class="boton boton-peligro boton-chico">Rechazar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
