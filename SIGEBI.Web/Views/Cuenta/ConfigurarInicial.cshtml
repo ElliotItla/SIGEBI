@@ -1,0 +1,51 @@
+﻿@model SIGEBI.Web.Models.Usuarios.AdministradorInicialViewModel
+@{
+    ViewData["Title"] = "Crear el administrador";
+}
+
+<div style="max-width: 520px; margin: 32px auto;">
+    <h1>Crear el administrador</h1>
+    <p class="ayuda">El sistema todavía no tiene usuarios. Crea la cuenta del administrador para empezar. Esta pantalla solo está disponible mientras no exista ningún usuario.</p>
+
+    <partial name="_Errores" />
+
+    <form asp-action="ConfigurarInicial" method="post" class="formulario">
+        <div class="campo">
+            <label asp-for="Identificador"></label>
+            <input asp-for="Identificador" autofocus />
+            <span asp-validation-for="Identificador" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Nombre"></label>
+            <input asp-for="Nombre" />
+            <span asp-validation-for="Nombre" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Apellido"></label>
+            <input asp-for="Apellido" />
+            <span asp-validation-for="Apellido" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Correo"></label>
+            <input asp-for="Correo" autocomplete="username" />
+            <span asp-validation-for="Correo" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Contrasena"></label>
+            <input asp-for="Contrasena" autocomplete="new-password" />
+            <span asp-validation-for="Contrasena" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="ConfirmarContrasena"></label>
+            <input asp-for="ConfirmarContrasena" autocomplete="new-password" />
+            <span asp-validation-for="ConfirmarContrasena" class="campo-error"></span>
+        </div>
+
+        <button type="submit" class="boton">Crear administrador</button>
+    </form>
+</div>

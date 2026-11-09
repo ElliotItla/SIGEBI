@@ -1,0 +1,44 @@
+﻿@model SIGEBI.Web.Models.Usuarios.UsuarioFormViewModel
+@using SIGEBI.Web.Models.Usuarios
+
+<div class="campo">
+    <label asp-for="Nombre"></label>
+    <input asp-for="Nombre" />
+    <span asp-validation-for="Nombre" class="campo-error"></span>
+</div>
+
+<div class="campo">
+    <label asp-for="Apellido"></label>
+    <input asp-for="Apellido" />
+    <span asp-validation-for="Apellido" class="campo-error"></span>
+</div>
+
+<div class="campo">
+    <label asp-for="Correo"></label>
+    <input asp-for="Correo" autocomplete="off" />
+    <span asp-validation-for="Correo" class="campo-error"></span>
+</div>
+
+<div class="campo">
+    <label asp-for="Tipo"></label>
+    <select asp-for="Tipo">
+        <option value="">Selecciona un tipo</option>
+        @foreach (var tipo in UsuarioFormViewModel.Tipos)
+        {
+            <option value="@tipo" selected="@(tipo == Model.Tipo)">@Etiquetas.Texto(tipo)</option>
+        }
+    </select>
+    <span asp-validation-for="Tipo" class="campo-error"></span>
+</div>
+
+<div class="campo">
+    <label asp-for="Contrasena">@(ViewData["TextoContrasena"] ?? "Contraseña")</label>
+    <input asp-for="Contrasena" autocomplete="new-password" />
+    <span asp-validation-for="Contrasena" class="campo-error"></span>
+</div>
+
+<div class="campo">
+    <label asp-for="ConfirmarContrasena"></label>
+    <input asp-for="ConfirmarContrasena" autocomplete="new-password" />
+    <span asp-validation-for="ConfirmarContrasena" class="campo-error"></span>
+</div>

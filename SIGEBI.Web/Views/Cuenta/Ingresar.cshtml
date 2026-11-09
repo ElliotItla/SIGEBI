@@ -1,0 +1,29 @@
+﻿@model SIGEBI.Web.Models.Usuarios.IngresarViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<div style="max-width: 420px; margin: 32px auto;">
+    <h1>Iniciar sesión</h1>
+    <p class="ayuda">Escribe tu correo y tu contraseña para entrar al sistema.</p>
+
+    <partial name="_Errores" />
+
+    <form asp-action="Ingresar" method="post" class="formulario">
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="campo">
+            <label asp-for="Correo"></label>
+            <input asp-for="Correo" autocomplete="username" autofocus />
+            <span asp-validation-for="Correo" class="campo-error"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Contrasena"></label>
+            <input asp-for="Contrasena" autocomplete="current-password" />
+            <span asp-validation-for="Contrasena" class="campo-error"></span>
+        </div>
+
+        <button type="submit" class="boton">Entrar</button>
+    </form>
+</div>

@@ -1,0 +1,27 @@
+﻿@model SIGEBI.Web.Models.Usuarios.UsuarioFormViewModel
+@{
+    ViewData["Title"] = "Editar usuario";
+    ViewData["TextoContrasena"] = "Nueva contraseña (déjala vacía para no cambiarla)";
+}
+
+<h1>Editar usuario</h1>
+<p class="ayuda">El identificador no se puede cambiar.</p>
+
+<partial name="_Errores" />
+
+<form asp-action="Editar" method="post" class="formulario">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Identificador" />
+
+    <div class="campo">
+        <label>Identificador</label>
+        <input value="@Model.Identificador" disabled />
+    </div>
+
+    <partial name="_Campos" model="Model" view-data="ViewData" />
+
+    <div class="acciones">
+        <button type="submit" class="boton">Guardar cambios</button>
+        <a class="boton boton-secundario" asp-action="Index">Cancelar</a>
+    </div>
+</form>

@@ -1,0 +1,100 @@
+﻿@model SIGEBI.Web.Models.Usuarios.UsuariosIndexViewModel
+@using SIGEBI.Web.Models.Usuarios
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<div class="acciones" style="justify-content: space-between;">
+    <div>
+        <h1>Usuarios</h1>
+        <p class="ayuda">Cuentas registradas en el sistema.</p>
+    </div>
+    @if (Model.PuedeAdministrar)
+    {
+        <a class="boton" asp-action="Crear">Nuevo usuario</a>
+    }
+</div>
+
+<form method="get" asp-action="Index" class="filtros">
+    <div class="campo">
+        <label for="tipo">Tipo de usuario</label>
+        <select id="tipo" name="tipo">
+            <option value="">Todos</option>
+            @foreach (var tipo in UsuarioFormViewModel.Tipos)
+            {
+                <option value="@tipo" selected="@(tipo == Model.Tipo)">@Etiquetas.Texto(tipo)</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="estado">Estado</label>
+        <select id="estado" name="estado">
+            <option value="">Todos</option>
+            <option value="activos" selected="@(Model.Estado == "activos")">Activos</option>
+            <option value="inactivos" selected="@(Model.Estado == "inactivos")">Inactivos</option>
+        </select>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Filtrar</button>
+        <a class="boton boton-secundario" asp-action="Index">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Usuarios.Count == 0)
+{
+    <div class="vacio">No se encontraron usuarios con esos filtros.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Identificador</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    @if (Model.PuedeAdministrar)
+                    {
+                        <th>Acciones</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td>@usuario.Identificador</td>
+                        <td>@usuario.Nombre @usuario.Apellido</td>
+                        <td>@usuario.Correo</td>
+                        <td>@Etiquetas.Texto(usuario.Tipo)</td>
+                        <td>
+                            <span class="@Etiquetas.Clase(usuario.Activo ? "Activo" : "Inactivo")">@(usuario.Activo ? "Activo" : "Inactivo")</span>
+                            @if (usuario.BloqueadoHasta != null && usuario.BloqueadoHasta > DateTime.Now)
+                            {
+                                <span class="etiqueta etiqueta-ambar">Bloqueado hasta las @usuario.BloqueadoHasta.Value.ToString("HH:mm")</span>
+                            }
+                        </td>
+                        @if (Model.PuedeAdministrar)
+                        {
+                            <td>
+                                <div class="acciones">
+                                    <a class="boton boton-secundario boton-chico" asp-action="Editar" asp-route-id="@usuario.Id">Editar</a>
+                                    <form asp-action="CambiarEstado" method="post">
+                                        <input type="hidden" name="id" value="@usuario.Id" />
+                                        <input type="hidden" name="activo" value="@((!usuario.Activo).ToString().ToLower())" />
+                                        <button type="submit" class="@(usuario.Activo ? "boton boton-peligro boton-chico" : "boton boton-chico")"
+                                                onclick="return confirm('@(usuario.Activo ? "¿Desactivar" : "¿Activar") la cuenta de @usuario.Nombre @usuario.Apellido?');">
+                                            @(usuario.Activo ? "Desactivar" : "Activar")
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

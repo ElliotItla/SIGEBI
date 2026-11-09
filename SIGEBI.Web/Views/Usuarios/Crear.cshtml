@@ -1,0 +1,24 @@
+﻿@model SIGEBI.Web.Models.Usuarios.UsuarioFormViewModel
+@{
+    ViewData["Title"] = "Nuevo usuario";
+}
+
+<h1>Nuevo usuario</h1>
+<p class="ayuda">La cuenta queda activa apenas se registra.</p>
+
+<partial name="_Errores" />
+
+<form asp-action="Crear" method="post" class="formulario">
+    <div class="campo">
+        <label asp-for="Identificador"></label>
+        <input asp-for="Identificador" autofocus />
+        <span asp-validation-for="Identificador" class="campo-error"></span>
+    </div>
+
+    <partial name="_Campos" model="Model" />
+
+    <div class="acciones">
+        <button type="submit" class="boton">Registrar usuario</button>
+        <a class="boton boton-secundario" asp-action="Index">Cancelar</a>
+    </div>
+</form>
