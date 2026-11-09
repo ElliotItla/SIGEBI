@@ -1,0 +1,77 @@
+﻿@model SIGEBI.Web.Models.Catalogo.CatalogoIndexViewModel
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="acciones" style="justify-content: space-between;">
+    <div>
+        <h1>Catálogo</h1>
+        <p class="ayuda">Busca un libro y revisa cuántos ejemplares hay disponibles.</p>
+    </div>
+    @if (Model.PuedeAdministrar)
+    {
+        <a class="boton" asp-action="Crear">Nuevo recurso</a>
+    }
+</div>
+
+<form method="get" asp-action="Index" class="filtros">
+    <div class="campo">
+        <label for="titulo">Título</label>
+        <input id="titulo" name="titulo" value="@Model.Titulo" />
+    </div>
+    <div class="campo">
+        <label for="autor">Autor</label>
+        <input id="autor" name="autor" value="@Model.Autor" />
+    </div>
+    <div class="campo">
+        <label for="categoria">Categoría</label>
+        <input id="categoria" name="categoria" value="@Model.Categoria" />
+    </div>
+    <div class="campo" style="flex: 0 0 auto;">
+        <label for="soloDisponibles">
+            <input type="checkbox" id="soloDisponibles" name="soloDisponibles" value="true" checked="@Model.SoloDisponibles" style="width: auto;" />
+            Solo disponibles
+        </label>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Buscar</button>
+        <a class="boton boton-secundario" asp-action="Index">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Recursos.Count == 0)
+{
+    <div class="vacio">No se encontraron recursos con esa búsqueda.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Categoría</th>
+                    <th>Disponibilidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var recurso in Model.Recursos)
+                {
+                    <tr>
+                        <td><a asp-action="Detalle" asp-route-id="@recurso.Id">@recurso.Titulo</a></td>
+                        <td>@recurso.Autor</td>
+                        <td>@recurso.Categoria</td>
+                        <td>
+                            <span class="@Etiquetas.Clase(recurso.Disponibles > 0 ? "Disponible" : "Prestado")">
+                                @(recurso.Disponibles > 0 ? $"{recurso.Disponibles} de {recurso.TotalEjemplares} disponibles" : "Sin ejemplares disponibles")
+                            </span>
+                        </td>
+                        <td><a class="boton boton-secundario boton-chico" asp-action="Detalle" asp-route-id="@recurso.Id">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

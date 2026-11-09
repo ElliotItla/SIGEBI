@@ -1,0 +1,58 @@
+﻿@model SIGEBI.Web.Models.Catalogo.HistorialRecursoViewModel
+@{
+    ViewData["Title"] = "Historial";
+}
+
+<p class="ayuda">
+    @if (Model.Recurso != null)
+    {
+        <a asp-action="Detalle" asp-route-id="@Model.RecursoId">&larr; Volver al recurso</a>
+    }
+    else
+    {
+        <a asp-action="Index">&larr; Volver al catálogo</a>
+    }
+</p>
+
+<h1>Historial de estados</h1>
+<p class="ayuda">@(Model.Recurso?.Titulo ?? "Recurso dado de baja"). Cada cambio de estado de sus ejemplares queda registrado.</p>
+
+@if (Model.Cambios.Count == 0)
+{
+    <div class="vacio">Este recurso todavía no tiene cambios registrados.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Ejemplar</th>
+                    <th>Cambio</th>
+                    <th>Responsable</th>
+                    <th>Motivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cambio in Model.Cambios)
+                {
+                    <tr>
+                        <td>@cambio.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@cambio.CodigoEjemplar</td>
+                        <td>
+                            @if (cambio.EstadoAnterior != null)
+                            {
+                                <span class="@Etiquetas.Clase(cambio.EstadoAnterior)">@Etiquetas.Texto(cambio.EstadoAnterior)</span>
+                                <span>&rarr;</span>
+                            }
+                            <span class="@Etiquetas.Clase(cambio.EstadoNuevo)">@Etiquetas.Texto(cambio.EstadoNuevo)</span>
+                        </td>
+                        <td>@(cambio.Responsable ?? "Sistema")</td>
+                        <td>@cambio.Motivo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

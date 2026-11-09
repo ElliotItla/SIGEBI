@@ -1,0 +1,94 @@
+﻿@model SIGEBI.Web.Models.Catalogo.DetalleRecursoViewModel
+@using SIGEBI.Web.Models.Catalogo
+@{
+    ViewData["Title"] = Model.Recurso.Titulo;
+}
+
+<p class="ayuda"><a asp-action="Index">&larr; Volver al catálogo</a></p>
+
+<div class="acciones" style="justify-content: space-between;">
+    <div>
+        <h1>@Model.Recurso.Titulo</h1>
+        <p class="ayuda">@Model.Recurso.Autor</p>
+    </div>
+    <div class="acciones">
+        @if (Model.PuedeSolicitar && Model.Recurso.Disponibles > 0)
+        {
+            <form asp-controller="Prestamos" asp-action="Solicitar" method="post">
+                <input type="hidden" name="recursoId" value="@Model.Recurso.Id" />
+                <button type="submit" class="boton">Solicitar préstamo</button>
+            </form>
+        }
+        @if (Model.PuedeAdministrar)
+        {
+            <a class="boton boton-secundario" asp-action="Editar" asp-route-id="@Model.Recurso.Id">Editar</a>
+        }
+        @if (Model.PuedeVerHistorial)
+        {
+            <a class="boton boton-secundario" asp-action="Historial" asp-route-id="@Model.Recurso.Id">Historial</a>
+        }
+        @if (Model.PuedeDarDeBaja)
+        {
+            <form asp-action="DarDeBaja" method="post">
+                <input type="hidden" name="id" value="@Model.Recurso.Id" />
+                <button type="submit" class="boton boton-peligro"
+                        onclick="return confirm('¿Dar de baja este recurso y todos sus ejemplares?');">Dar de baja</button>
+            </form>
+        }
+    </div>
+</div>
+
+<div class="datos">
+    <div class="dato"><b>@Model.Recurso.Codigo</b><span>Código</span></div>
+    <div class="dato"><b>@Model.Recurso.Categoria</b><span>Categoría</span></div>
+    <div class="dato"><b>@Model.Recurso.Disponibles de @Model.Recurso.TotalEjemplares</b><span>Ejemplares disponibles</span></div>
+</div>
+
+<h2>Ejemplares</h2>
+<div class="tabla-contenedor">
+    <table class="tabla">
+        <thead>
+            <tr>
+                <th>Código del ejemplar</th>
+                <th>Estado</th>
+                @if (Model.PuedeAdministrar)
+                {
+                    <th>Cambiar estado</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ejemplar in Model.Recurso.Ejemplares)
+            {
+                <tr>
+                    <td>@ejemplar.CodigoEjemplar</td>
+                    <td><span class="@Etiquetas.Clase(ejemplar.Estado)">@Etiquetas.Texto(ejemplar.Estado)</span></td>
+                    @if (Model.PuedeAdministrar)
+                    {
+                        <td>
+                            @if (ejemplar.Estado == "Prestado")
+                            {
+                                <span class="ayuda">Cambia al registrar la devolución.</span>
+                            }
+                            else
+                            {
+                                <form asp-action="CambiarEstadoEjemplar" method="post" class="acciones">
+                                    <input type="hidden" name="ejemplarId" value="@ejemplar.Id" />
+                                    <input type="hidden" name="recursoId" value="@Model.Recurso.Id" />
+                                    <select name="estadoNuevo" aria-label="Nuevo estado" style="padding: 4px 8px;">
+                                        @foreach (var estado in DetalleRecursoViewModel.EstadosManuales.Where(e => e != ejemplar.Estado))
+                                        {
+                                            <option value="@estado">@Etiquetas.Texto(estado)</option>
+                                        }
+                                    </select>
+                                    <input name="motivo" placeholder="Motivo" aria-label="Motivo" maxlength="200" style="padding: 4px 8px;" />
+                                    <button type="submit" class="boton boton-secundario boton-chico">Cambiar</button>
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

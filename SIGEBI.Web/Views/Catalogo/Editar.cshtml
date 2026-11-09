@@ -1,0 +1,26 @@
+﻿@model SIGEBI.Web.Models.Catalogo.RecursoFormViewModel
+@{
+    ViewData["Title"] = "Editar recurso";
+}
+
+<h1>Editar recurso</h1>
+<p class="ayuda">El código no se puede cambiar.</p>
+
+<partial name="_Errores" />
+
+<form asp-action="Editar" method="post" class="formulario">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Codigo" />
+
+    <div class="campo">
+        <label>Código</label>
+        <input value="@Model.Codigo" disabled />
+    </div>
+
+    <partial name="_Campos" model="Model" />
+
+    <div class="acciones">
+        <button type="submit" class="boton">Guardar cambios</button>
+        <a class="boton boton-secundario" asp-action="Detalle" asp-route-id="@Model.Id">Cancelar</a>
+    </div>
+</form>

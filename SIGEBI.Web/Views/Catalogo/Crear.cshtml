@@ -1,0 +1,30 @@
+﻿@model SIGEBI.Web.Models.Catalogo.RecursoFormViewModel
+@{
+    ViewData["Title"] = "Nuevo recurso";
+}
+
+<h1>Nuevo recurso</h1>
+<p class="ayuda">Se crean sus ejemplares con el código del recurso y un número. Todos quedan disponibles.</p>
+
+<partial name="_Errores" />
+
+<form asp-action="Crear" method="post" class="formulario">
+    <div class="campo">
+        <label asp-for="Codigo"></label>
+        <input asp-for="Codigo" autofocus />
+        <span asp-validation-for="Codigo" class="campo-error"></span>
+    </div>
+
+    <partial name="_Campos" model="Model" />
+
+    <div class="campo">
+        <label asp-for="CantidadEjemplares"></label>
+        <input asp-for="CantidadEjemplares" type="number" min="1" max="100" />
+        <span asp-validation-for="CantidadEjemplares" class="campo-error"></span>
+    </div>
+
+    <div class="acciones">
+        <button type="submit" class="boton">Registrar recurso</button>
+        <a class="boton boton-secundario" asp-action="Index">Cancelar</a>
+    </div>
+</form>
