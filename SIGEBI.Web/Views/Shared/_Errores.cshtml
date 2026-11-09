@@ -1,0 +1,10 @@
+﻿@{
+    var errores = ViewData.ModelState.TryGetValue(string.Empty, out var entrada) ? entrada.Errors : null;
+}
+@if (errores != null && errores.Count > 0)
+{
+    foreach (var error in errores)
+    {
+        <div class="alerta alerta-error" role="alert">@error.ErrorMessage</div>
+    }
+}
