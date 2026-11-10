@@ -1,3 +1,11 @@
+﻿@using System.Security.Claims
+@{
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var admin = User.IsInRole(Roles.Administrador);
+    var personal = User.IsInRole(Roles.Personal);
+    var auditor = User.IsInRole(Roles.Auditor);
+    var lector = User.IsInRole(Roles.Estudiante) || User.IsInRole(Roles.Docente);
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,11 +16,49 @@
 </head>
 <body>
     <header class="encabezado">
-        <span class="marca">SIGEBI</span>
+        <a class="marca" asp-controller="Home" asp-action="Index">SIGEBI</a>
         <span class="subtitulo">Sistema de Gestión de Bibliotecas</span>
+        @if (autenticado)
+        {
+            <div class="sesion">
+                <span>@User.Identity!.Name</span>
+                <span class="rol">@User.FindFirstValue(ClaimTypes.Role)</span>
+                <form asp-controller="Cuenta" asp-action="Salir" method="post" class="form-salir">
+                    <button type="submit" class="boton-enlace">Salir</button>
+                </form>
+            </div>
+        }
     </header>
 
+    @if (autenticado)
+    {
+        <nav class="menu">
+            <a asp-controller="Home" asp-action="Index">Inicio</a>
+            <a asp-controller="Catalogo" asp-action="Index">Catálogo</a>
+            @if (lector)
+            {
+                <a asp-controller="Prestamos" asp-action="Mios">Mis préstamos</a>
+                <a asp-controller="Penalizaciones" asp-action="Mias">Mis penalizaciones</a>
+            }
+            @if (admin || personal)
+            {
+                <a asp-controller="Prestamos" asp-action="Pendientes">Solicitudes</a>
+                <a asp-controller="Devoluciones" asp-action="Registrar">Devoluciones</a>
+                <a asp-controller="Penalizaciones" asp-action="Activas">Penalizaciones</a>
+                <a asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+            }
+            @if (admin || auditor)
+            {
+                <a asp-controller="Reportes" asp-action="Index">Reportes</a>
+                <a asp-controller="Auditoria" asp-action="Index">Auditoría</a>
+                <a asp-controller="Notificaciones" asp-action="Registro">Avisos enviados</a>
+            }
+            <a asp-controller="Notificaciones" asp-action="Index">Notificaciones</a>
+        </nav>
+    }
+
     <main class="contenido">
+        <partial name="_Mensajes" />
         @RenderBody()
     </main>
 
