@@ -1,0 +1,75 @@
+﻿@model SIGEBI.Web.Models.Notificaciones.NotificacionesIndexViewModel
+@using SIGEBI.Web.Models.Notificaciones
+@{
+    ViewData["Title"] = "Notificaciones";
+}
+
+<div class="acciones" style="justify-content: space-between;">
+    <div>
+        <h1>Notificaciones</h1>
+        <p class="ayuda">
+            @if (Model.NoLeidas > 0)
+            {
+                <span>Tienes <b>@Model.NoLeidas</b> sin leer.</span>
+            }
+            else
+            {
+                <span>No tienes notificaciones sin leer.</span>
+            }
+        </p>
+    </div>
+    @if (Model.NoLeidas > 0)
+    {
+        <form asp-action="MarcarLeidas" method="post">
+            <button type="submit" class="boton boton-secundario">Marcar todas como leídas</button>
+        </form>
+    }
+</div>
+
+<form method="get" class="filtros">
+    <div class="campo" style="flex: 0 0 auto;">
+        <label for="soloNoLeidas">
+            <input type="checkbox" id="soloNoLeidas" name="soloNoLeidas" value="true" checked="@Model.SoloNoLeidas" style="width: auto;" />
+            Solo las no leídas
+        </label>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Filtrar</button>
+    </div>
+</form>
+
+@if (Model.Notificaciones.Count == 0)
+{
+    <div class="vacio">@(Model.SoloNoLeidas ? "No tienes notificaciones sin leer." : "Todavía no tienes notificaciones.")</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Mensaje</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var notificacion in Model.Notificaciones)
+                {
+                    <tr style="@(notificacion.Leida ? "" : "font-weight: 600;")">
+                        <td>@notificacion.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@TiposDeAviso.Nombre(notificacion.TipoEvento)</td>
+                        <td>@notificacion.Mensaje</td>
+                        <td>
+                            @if (!notificacion.Leida)
+                            {
+                                <span class="etiqueta etiqueta-ambar">Nueva</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

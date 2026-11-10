@@ -1,0 +1,70 @@
+﻿@model SIGEBI.Web.Models.Notificaciones.RegistroNotificacionesViewModel
+@using SIGEBI.Web.Models.Notificaciones
+@{
+    ViewData["Title"] = "Avisos enviados";
+}
+
+<h1>Avisos enviados</h1>
+<p class="ayuda">Registro de todas las notificaciones que el sistema envió a los usuarios.</p>
+
+<form method="get" asp-action="Registro" class="filtros">
+    <div class="campo">
+        <label for="usuarioId">Usuario (número)</label>
+        <input id="usuarioId" name="usuarioId" type="number" min="1" value="@Model.UsuarioId" />
+    </div>
+    <div class="campo">
+        <label for="tipoEvento">Tipo de aviso</label>
+        <select id="tipoEvento" name="tipoEvento">
+            <option value="">Todos</option>
+            @foreach (var tipo in TiposDeAviso.Todos)
+            {
+                <option value="@tipo" selected="@(tipo == Model.TipoEvento)">@TiposDeAviso.Nombre(tipo)</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="desde">Desde</label>
+        <input id="desde" name="desde" type="date" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="campo">
+        <label for="hasta">Hasta</label>
+        <input id="hasta" name="hasta" type="date" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Filtrar</button>
+        <a class="boton boton-secundario" asp-action="Registro">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Notificaciones.Count == 0)
+{
+    <div class="vacio">No se encontraron avisos con esos filtros.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Tipo</th>
+                    <th>Mensaje</th>
+                    <th>Leída</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var notificacion in Model.Notificaciones)
+                {
+                    <tr>
+                        <td>@notificacion.FechaEnvio.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><a asp-action="Registro" asp-route-usuarioId="@notificacion.UsuarioId">@notificacion.NombreUsuario</a></td>
+                        <td>@TiposDeAviso.Nombre(notificacion.TipoEvento)</td>
+                        <td>@notificacion.Mensaje</td>
+                        <td>@(notificacion.Leida ? "Sí" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
