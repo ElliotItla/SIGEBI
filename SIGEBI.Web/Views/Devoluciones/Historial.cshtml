@@ -1,0 +1,65 @@
+﻿@model SIGEBI.Web.Models.Devoluciones.HistorialDevolucionesViewModel
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<h1>@Model.Titulo</h1>
+<p class="ayuda">@Model.Ayuda</p>
+
+@if (Model.Devoluciones.Count == 0)
+{
+    <div class="vacio">No hay devoluciones para mostrar.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    @if (Model.MostrarRecurso)
+                    {
+                        <th>Recurso</th>
+                    }
+                    @if (Model.MostrarUsuario)
+                    {
+                        <th>Usuario</th>
+                    }
+                    <th>Ejemplar</th>
+                    <th>Fecha límite</th>
+                    <th>Devuelto</th>
+                    <th>Puntualidad</th>
+                    <th>Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var devolucion in Model.Devoluciones)
+                {
+                    <tr>
+                        @if (Model.MostrarRecurso)
+                        {
+                            <td>@devolucion.TituloRecurso</td>
+                        }
+                        @if (Model.MostrarUsuario)
+                        {
+                            <td><a asp-action="PorUsuario" asp-route-id="@devolucion.UsuarioId">@devolucion.NombreUsuario</a></td>
+                        }
+                        <td>@devolucion.CodigoEjemplar</td>
+                        <td>@(devolucion.FechaLimite?.ToString("dd/MM/yyyy") ?? "—")</td>
+                        <td>@(devolucion.FechaDevolucion?.ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
+                        <td>
+                            @if (devolucion.DiasRetraso > 0)
+                            {
+                                <span class="etiqueta etiqueta-roja">@devolucion.DiasRetraso día(s) de retraso</span>
+                            }
+                            else
+                            {
+                                <span class="etiqueta etiqueta-verde">A tiempo</span>
+                            }
+                        </td>
+                        <td>@devolucion.Observacion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,70 @@
+﻿@model SIGEBI.Web.Models.Devoluciones.RegistrarDevolucionViewModel
+@{
+    ViewData["Title"] = "Registrar devolución";
+}
+
+<h1>Registrar devolución</h1>
+<p class="ayuda">Escribe el código del ejemplar que entrega el usuario. El sistema cierra el préstamo, deja el ejemplar disponible y, si hubo retraso, genera la penalización.</p>
+
+<partial name="_Errores" />
+
+<form asp-action="Registrar" method="post" class="formulario">
+    <div class="campo">
+        <label asp-for="CodigoEjemplar"></label>
+        <input asp-for="CodigoEjemplar" autofocus autocomplete="off" />
+        <span asp-validation-for="CodigoEjemplar" class="campo-error"></span>
+    </div>
+
+    <div class="campo">
+        <label>
+            <input asp-for="Danado" style="width: auto;" />
+            @Html.DisplayNameFor(m => m.Danado)
+        </label>
+        <span class="ayuda">Si llega dañado, queda fuera de servicio hasta que se revise.</span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Observacion"></label>
+        <textarea asp-for="Observacion" rows="3" maxlength="300"></textarea>
+        <span asp-validation-for="Observacion" class="campo-error"></span>
+    </div>
+
+    <button type="submit" class="boton">Registrar devolución</button>
+</form>
+
+@if (Model.Resultado != null)
+{
+    var d = Model.Resultado;
+
+    <h2>Última devolución registrada</h2>
+    <div class="datos">
+        <div class="dato"><b>@d.TituloRecurso</b><span>Recurso (@d.CodigoEjemplar)</span></div>
+        <div class="dato"><b>@d.NombreUsuario</b><span>Devuelto por</span></div>
+        <div class="dato">
+            <b>
+                @if (d.DiasRetraso > 0)
+                {
+                    <span class="etiqueta etiqueta-roja">@d.DiasRetraso día(s) de retraso</span>
+                }
+                else
+                {
+                    <span class="etiqueta etiqueta-verde">A tiempo</span>
+                }
+            </b>
+            <span>Fecha límite: @(d.FechaLimite?.ToString("dd/MM/yyyy") ?? "—")</span>
+        </div>
+        <div class="dato">
+            <b><span class="@Etiquetas.Clase(d.EstadoEjemplar)">@Etiquetas.Texto(d.EstadoEjemplar)</span></b>
+            <span>Estado del ejemplar</span>
+        </div>
+    </div>
+
+    @if (d.PenalizacionGenerada)
+    {
+        <div class="alerta alerta-error">Se generó una penalización para el usuario por la devolución tardía.</div>
+    }
+
+    <p class="ayuda">
+        <a asp-action="PorUsuario" asp-route-id="@d.UsuarioId">Ver devoluciones de este usuario</a>
+    </p>
+}
