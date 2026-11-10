@@ -1,6 +1,66 @@
-@{
+﻿@{
     ViewData["Title"] = "Inicio";
+    var admin = User.IsInRole(Roles.Administrador);
+    var personal = User.IsInRole(Roles.Personal);
+    var auditor = User.IsInRole(Roles.Auditor);
+    var lector = User.IsInRole(Roles.Estudiante) || User.IsInRole(Roles.Docente);
 }
 
-<h1>Bienvenido al SIGEBI</h1>
-<p>Sistema de Gestión de Bibliotecas. Aquí se irán agregando los módulos del sistema.</p>
+<h1>Hola, @User.Identity!.Name</h1>
+<p class="ayuda">Estas son las opciones que tienes disponibles.</p>
+
+<div class="tarjetas">
+    <a class="tarjeta" asp-controller="Catalogo" asp-action="Index">
+        <strong>Catálogo</strong>
+        <span>Busca libros y revisa si hay ejemplares disponibles.</span>
+    </a>
+    @if (lector)
+    {
+        <a class="tarjeta" asp-controller="Prestamos" asp-action="Mios">
+            <strong>Mis préstamos</strong>
+            <span>Consulta tus solicitudes, préstamos activos y fechas de entrega.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Penalizaciones" asp-action="Mias">
+            <strong>Mis penalizaciones</strong>
+            <span>Revisa si tienes alguna penalización activa.</span>
+        </a>
+    }
+    @if (admin || personal)
+    {
+        <a class="tarjeta" asp-controller="Prestamos" asp-action="Pendientes">
+            <strong>Solicitudes</strong>
+            <span>Aprueba o rechaza las solicitudes de préstamo.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Devoluciones" asp-action="Registrar">
+            <strong>Devoluciones</strong>
+            <span>Registra la devolución de un ejemplar.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Penalizaciones" asp-action="Activas">
+            <strong>Penalizaciones</strong>
+            <span>Resuelve las penalizaciones activas.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Usuarios" asp-action="Index">
+            <strong>Usuarios</strong>
+            <span>Consulta y administra las cuentas de usuario.</span>
+        </a>
+    }
+    @if (admin || auditor)
+    {
+        <a class="tarjeta" asp-controller="Reportes" asp-action="Index">
+            <strong>Reportes</strong>
+            <span>Préstamos, penalizaciones, uso del catálogo e inventario.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Auditoria" asp-action="Index">
+            <strong>Auditoría</strong>
+            <span>Consulta el registro de acciones del sistema.</span>
+        </a>
+        <a class="tarjeta" asp-controller="Notificaciones" asp-action="Registro">
+            <strong>Avisos enviados</strong>
+            <span>Registro de las notificaciones que envió el sistema.</span>
+        </a>
+    }
+    <a class="tarjeta" asp-controller="Notificaciones" asp-action="Index">
+        <strong>Notificaciones</strong>
+        <span>Lee los avisos que te envió el sistema.</span>
+    </a>
+</div>
