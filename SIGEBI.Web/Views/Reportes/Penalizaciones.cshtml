@@ -1,0 +1,48 @@
+﻿@model SIGEBI.Web.Models.Reportes.ReporteViewModel<SIGEBI.BL.Dtos.Reporte.ReportePenalizacionesDto>
+@{
+    ViewData["Title"] = "Reporte de penalizaciones";
+}
+
+<p class="ayuda"><a asp-action="Index">&larr; Reportes</a></p>
+<h1>Reporte de penalizaciones</h1>
+<p class="ayuda">Penalizaciones generadas en el período, según su estado actual.</p>
+
+<partial name="_Periodo" model="Model" />
+
+@if (Model.Datos == null)
+{
+    <div class="vacio">No se pudo generar el reporte.</div>
+}
+else
+{
+    var d = Model.Datos;
+
+    <h2>Del @d.Desde.ToString("dd/MM/yyyy") al @d.Hasta.ToString("dd/MM/yyyy")</h2>
+    <div class="datos">
+        <div class="dato"><b>@d.Generadas</b><span>Generadas</span></div>
+        <div class="dato"><b>@d.Resueltas</b><span>Resueltas</span></div>
+        <div class="dato"><b>@d.Activas</b><span>Activas</span></div>
+    </div>
+
+    <h2>Por tipo de usuario</h2>
+    @if (d.PorTipoUsuario.Count == 0)
+    {
+        <div class="vacio">No hubo penalizaciones en este período.</div>
+    }
+    else
+    {
+        <div class="tabla-contenedor">
+            <table class="tabla">
+                <thead>
+                    <tr><th>Tipo de usuario</th><th>Penalizaciones</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var fila in d.PorTipoUsuario)
+                    {
+                        <tr><td>@Etiquetas.Texto(fila.Nombre)</td><td>@fila.Cantidad</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}

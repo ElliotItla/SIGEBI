@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+    var completos = User.IsInRole(Roles.Administrador) || User.IsInRole(Roles.Auditor);
+}
+
+<h1>Reportes</h1>
+<p class="ayuda">Información para la gestión de la biblioteca.</p>
+
+<div class="tarjetas">
+    @if (completos)
+    {
+        <a class="tarjeta" asp-action="Prestamos">
+            <strong>Préstamos</strong>
+            <span>Solicitudes del período, devoluciones a tiempo y préstamos vencidos.</span>
+        </a>
+        <a class="tarjeta" asp-action="Penalizaciones">
+            <strong>Penalizaciones</strong>
+            <span>Generadas, resueltas y activas, por tipo de usuario.</span>
+        </a>
+        <a class="tarjeta" asp-action="UsoCatalogo">
+            <strong>Uso del catálogo</strong>
+            <span>Los recursos más solicitados y la demanda por categoría.</span>
+        </a>
+    }
+    <a class="tarjeta" asp-action="Inventario">
+        <strong>Inventario</strong>
+        <span>Cuántos ejemplares hay y en qué estado, por categoría y por recurso.</span>
+    </a>
+</div>

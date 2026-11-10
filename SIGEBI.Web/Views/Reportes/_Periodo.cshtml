@@ -1,0 +1,16 @@
+﻿@model SIGEBI.Web.Models.Reportes.PeriodoViewModel
+
+<form method="get" class="filtros">
+    <div class="campo">
+        <label for="desde">Desde</label>
+        <input id="desde" name="desde" type="date" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="campo">
+        <label for="hasta">Hasta</label>
+        <input id="hasta" name="hasta" type="date" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Ver reporte</button>
+    </div>
+</form>
+<p class="ayuda">Si no eliges fechas, se muestran los últimos 30 días.</p>

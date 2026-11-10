@@ -1,0 +1,37 @@
+﻿@model SIGEBI.Web.Models.Reportes.ReporteViewModel<SIGEBI.BL.Dtos.Reporte.ReportePrestamosDto>
+@using SIGEBI.Web.Models.Reportes
+@{
+    ViewData["Title"] = "Reporte de préstamos";
+}
+
+<p class="ayuda"><a asp-action="Index">&larr; Reportes</a></p>
+<h1>Reporte de préstamos</h1>
+<p class="ayuda">Solicitudes hechas en el período, según su estado actual.</p>
+
+<partial name="_Periodo" model="Model" />
+
+@if (Model.Datos == null)
+{
+    <div class="vacio">No se pudo generar el reporte.</div>
+}
+else
+{
+    var d = Model.Datos;
+
+    <h2>Del @d.Desde.ToString("dd/MM/yyyy") al @d.Hasta.ToString("dd/MM/yyyy")</h2>
+    <div class="datos">
+        <div class="dato"><b>@d.TotalSolicitudes</b><span>Solicitudes</span></div>
+        <div class="dato"><b>@d.Pendientes</b><span>Pendientes</span></div>
+        <div class="dato"><b>@d.Rechazados</b><span>Rechazadas</span></div>
+        <div class="dato"><b>@d.Activos</b><span>Préstamos activos</span></div>
+        <div class="dato"><b>@d.Devueltos</b><span>Devueltos</span></div>
+    </div>
+
+    <h2>Devoluciones</h2>
+    <div class="datos">
+        <div class="dato"><b>@d.DevueltosATiempo</b><span>A tiempo</span></div>
+        <div class="dato"><b>@d.DevueltosConRetraso</b><span>Con retraso</span></div>
+        <div class="dato"><b>@Formato.Porcentaje(d.TasaDevolucionPuntual)</b><span>Devoluciones puntuales</span></div>
+        <div class="dato"><b>@d.VencidosActuales</b><span>Vencidos sin devolver (hoy)</span></div>
+    </div>
+}

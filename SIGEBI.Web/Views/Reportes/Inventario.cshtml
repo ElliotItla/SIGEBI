@@ -1,0 +1,62 @@
+﻿@model SIGEBI.Web.Models.Reportes.ReporteViewModel<SIGEBI.BL.Dtos.Reporte.ReporteInventarioDto>
+@{
+    ViewData["Title"] = "Inventario";
+}
+
+<p class="ayuda"><a asp-action="Index">&larr; Reportes</a></p>
+<h1>Inventario</h1>
+<p class="ayuda">Estado actual de los recursos y ejemplares. No incluye lo dado de baja.</p>
+
+@if (Model.Datos == null)
+{
+    <div class="vacio">No se pudo generar el reporte.</div>
+}
+else
+{
+    var d = Model.Datos;
+
+    <div class="datos">
+        <div class="dato"><b>@d.TotalRecursos</b><span>Recursos</span></div>
+        <div class="dato"><b>@d.TotalEjemplares</b><span>Ejemplares</span></div>
+        <div class="dato"><b>@d.Disponibles</b><span>Disponibles</span></div>
+        <div class="dato"><b>@d.Prestados</b><span>Prestados</span></div>
+        <div class="dato"><b>@d.Reservados</b><span>Reservados</span></div>
+        <div class="dato"><b>@d.FueraDeServicio</b><span>Fuera de servicio</span></div>
+    </div>
+
+    <h2>Por categoría</h2>
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr><th>Categoría</th><th>Recursos</th><th>Ejemplares</th><th>Disponibles</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var fila in d.PorCategoria)
+                {
+                    <tr><td>@fila.Categoria</td><td>@fila.Recursos</td><td>@fila.Ejemplares</td><td>@fila.Disponibles</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Por recurso</h2>
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr><th>Título</th><th>Código</th><th>Categoría</th><th>Ejemplares</th><th>Disponibles</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var fila in d.PorRecurso)
+                {
+                    <tr>
+                        <td>@fila.Titulo</td>
+                        <td>@fila.Codigo</td>
+                        <td>@fila.Categoria</td>
+                        <td>@fila.Ejemplares</td>
+                        <td><span class="@Etiquetas.Clase(fila.Disponibles > 0 ? "Disponible" : "Prestado")">@fila.Disponibles de @fila.Ejemplares</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

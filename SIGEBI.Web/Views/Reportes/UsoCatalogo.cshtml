@@ -1,0 +1,62 @@
+﻿@model SIGEBI.Web.Models.Reportes.ReporteViewModel<SIGEBI.BL.Dtos.Reporte.ReporteUsoCatalogoDto>
+@using SIGEBI.Web.Models.Reportes
+@{
+    ViewData["Title"] = "Uso del catálogo";
+}
+
+<p class="ayuda"><a asp-action="Index">&larr; Reportes</a></p>
+<h1>Uso del catálogo</h1>
+<p class="ayuda">Qué recursos se piden más en el período.</p>
+
+<partial name="_Periodo" model="Model" />
+
+@if (Model.Datos == null)
+{
+    <div class="vacio">No se pudo generar el reporte.</div>
+}
+else
+{
+    var d = Model.Datos;
+
+    <h2>Del @d.Desde.ToString("dd/MM/yyyy") al @d.Hasta.ToString("dd/MM/yyyy")</h2>
+    <div class="datos">
+        <div class="dato"><b>@Formato.Porcentaje(d.DisponibilidadActual)</b><span>Ejemplares disponibles ahora</span></div>
+    </div>
+
+    <h2>Recursos más solicitados</h2>
+    @if (d.MasSolicitados.Count == 0)
+    {
+        <div class="vacio">No hubo solicitudes en este período.</div>
+    }
+    else
+    {
+        <div class="tabla-contenedor">
+            <table class="tabla">
+                <thead>
+                    <tr><th>Título</th><th>Código</th><th>Categoría</th><th>Solicitudes</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var recurso in d.MasSolicitados)
+                    {
+                        <tr><td>@recurso.Titulo</td><td>@recurso.Codigo</td><td>@recurso.Categoria</td><td>@recurso.Solicitudes</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Demanda por categoría</h2>
+        <div class="tabla-contenedor">
+            <table class="tabla">
+                <thead>
+                    <tr><th>Categoría</th><th>Solicitudes</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var fila in d.DemandaPorCategoria)
+                    {
+                        <tr><td>@fila.Nombre</td><td>@fila.Cantidad</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}

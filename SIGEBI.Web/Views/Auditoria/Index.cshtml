@@ -1,0 +1,97 @@
+﻿@model SIGEBI.Web.Models.Auditoria.AuditoriaIndexViewModel
+@using SIGEBI.Web.Models.Auditoria
+@{
+    ViewData["Title"] = "Auditoría";
+}
+
+<div class="acciones" style="justify-content: space-between;">
+    <div>
+        <h1>Auditoría</h1>
+        <p class="ayuda">Registro de las acciones del sistema. Solo se puede consultar: nadie lo modifica ni lo borra.</p>
+    </div>
+    <form asp-action="Exportar" method="post">
+        <input type="hidden" name="usuarioId" value="@Model.UsuarioId" />
+        <input type="hidden" name="modulo" value="@Model.Modulo" />
+        <input type="hidden" name="tipoAccion" value="@Model.TipoAccion" />
+        <input type="hidden" name="desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+        <input type="hidden" name="hasta" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+        <button type="submit" class="boton boton-secundario" title="Descarga todos los registros que cumplen los filtros aplicados">Exportar a CSV</button>
+    </form>
+</div>
+
+<form method="get" asp-action="Index" class="filtros">
+    <div class="campo">
+        <label for="usuarioId">Usuario (número)</label>
+        <input id="usuarioId" name="usuarioId" type="number" min="1" value="@Model.UsuarioId" />
+    </div>
+    <div class="campo">
+        <label for="modulo">Módulo</label>
+        <select id="modulo" name="modulo">
+            <option value="">Todos</option>
+            @foreach (var modulo in AuditoriaIndexViewModel.ModulosDisponibles)
+            {
+                <option value="@modulo" selected="@(modulo == Model.Modulo)">@modulo</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="tipoAccion">Acción</label>
+        <input id="tipoAccion" name="tipoAccion" value="@Model.TipoAccion" placeholder="Ej.: AprobarPrestamo" />
+    </div>
+    <div class="campo">
+        <label for="desde">Desde</label>
+        <input id="desde" name="desde" type="date" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="campo">
+        <label for="hasta">Hasta</label>
+        <input id="hasta" name="hasta" type="date" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Filtrar</button>
+        <a class="boton boton-secundario" asp-action="Index">Limpiar</a>
+    </div>
+</form>
+
+@if (Model.Registros.Count == 0)
+{
+    <div class="vacio">No se encontraron registros con esos filtros.</div>
+}
+else
+{
+    @if (Model.Total > Model.Registros.Count)
+    {
+        <p class="ayuda">Se muestran los @Model.Registros.Count más recientes de @Model.Total. Usa los filtros o exporta a CSV para ver todos.</p>
+    }
+    else
+    {
+        <p class="ayuda">@Model.Total registro(s).</p>
+    }
+
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Fecha y hora</th>
+                    <th>Usuario</th>
+                    <th>Módulo</th>
+                    <th>Acción</th>
+                    <th>Resultado</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var registro in Model.Registros)
+                {
+                    <tr>
+                        <td>@registro.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@(registro.Usuario ?? "Sistema")</td>
+                        <td>@registro.Modulo</td>
+                        <td>@registro.TipoAccion</td>
+                        <td><span class="@Etiquetas.Clase(registro.Resultado)">@registro.Resultado</span></td>
+                        <td>@registro.Detalle</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
