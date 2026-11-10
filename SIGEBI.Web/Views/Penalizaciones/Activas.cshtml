@@ -1,0 +1,53 @@
+﻿@model List<SIGEBI.BL.Dtos.Penalizacion.PenalizacionDto>
+@{
+    ViewData["Title"] = "Penalizaciones activas";
+}
+
+<h1>Penalizaciones activas</h1>
+<p class="ayuda">Mientras una penalización esté activa, el usuario no puede pedir préstamos. Al resolverla, indica el motivo: un pago, el cumplimiento de una condición o una exoneración autorizada.</p>
+
+<datalist id="motivos">
+    <option value="Pago"></option>
+    <option value="Cumplimiento de la condición"></option>
+    <option value="Exoneración autorizada"></option>
+</datalist>
+
+@if (Model.Count == 0)
+{
+    <div class="vacio">No hay penalizaciones activas.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Recurso</th>
+                    <th>Retraso</th>
+                    <th>Generada</th>
+                    <th>Resolver</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var penalizacion in Model)
+                {
+                    <tr>
+                        <td><a asp-action="PorUsuario" asp-route-id="@penalizacion.UsuarioId">@penalizacion.NombreUsuario</a></td>
+                        <td>@penalizacion.TituloRecurso</td>
+                        <td>@penalizacion.DiasRetraso día(s)</td>
+                        <td>@penalizacion.FechaGeneracion.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <form asp-action="Resolver" method="post" class="acciones">
+                                <input type="hidden" name="penalizacionId" value="@penalizacion.Id" />
+                                <input name="motivo" list="motivos" placeholder="Motivo" aria-label="Motivo de la resolución" maxlength="200" required style="padding: 4px 8px;" />
+                                <button type="submit" class="boton boton-chico"
+                                        onclick="return confirm('¿Resolver esta penalización?');">Resolver</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

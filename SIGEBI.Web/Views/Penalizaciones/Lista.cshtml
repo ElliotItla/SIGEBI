@@ -1,0 +1,67 @@
+﻿@model SIGEBI.Web.Models.Penalizaciones.PenalizacionesListaViewModel
+@{
+    ViewData["Title"] = Model.Titulo;
+    var hayActivas = Model.Penalizaciones.Any(p => p.Estado == "Activa");
+}
+
+<h1>@Model.Titulo</h1>
+<p class="ayuda">@Model.Ayuda</p>
+
+@if (Model.AvisarBloqueo && hayActivas)
+{
+    <div class="alerta alerta-error">Tienes una penalización activa: no podrás pedir préstamos hasta que el personal de la biblioteca la resuelva.</div>
+}
+
+<form method="get" class="filtros">
+    <div class="campo" style="flex: 0 0 auto;">
+        <label for="soloActivas">
+            <input type="checkbox" id="soloActivas" name="soloActivas" value="true" checked="@Model.SoloActivas" style="width: auto;" />
+            Solo las activas
+        </label>
+    </div>
+    <div class="acciones">
+        <button type="submit" class="boton">Filtrar</button>
+    </div>
+</form>
+
+@if (Model.Penalizaciones.Count == 0)
+{
+    <div class="vacio">No hay penalizaciones para mostrar.</div>
+}
+else
+{
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Recurso</th>
+                    <th>Retraso</th>
+                    <th>Generada</th>
+                    <th>Estado</th>
+                    <th>Resolución</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var penalizacion in Model.Penalizaciones)
+                {
+                    <tr>
+                        <td>@penalizacion.TituloRecurso</td>
+                        <td>@penalizacion.DiasRetraso día(s)</td>
+                        <td>@penalizacion.FechaGeneracion.ToString("dd/MM/yyyy")</td>
+                        <td><span class="@Etiquetas.Clase(penalizacion.Estado)">@Etiquetas.Texto(penalizacion.Estado)</span></td>
+                        <td>
+                            @if (penalizacion.Estado == "Resuelta")
+                            {
+                                <span>@penalizacion.FechaResolucion?.ToString("dd/MM/yyyy"). @penalizacion.MotivoResolucion</span>
+                            }
+                            else
+                            {
+                                <span>Pendiente</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
